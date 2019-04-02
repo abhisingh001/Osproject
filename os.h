@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+
+//structure for process
 struct process
     {
         int p_id;
@@ -12,10 +14,7 @@ struct process
     };
 
 
-void fun()
-{
-    printf("bubble is runnung\n");
-}
+/* function to swap arrival_time of two processs a and b*/
 void swap(struct process *a, struct process *b) 
 { 
     printf("swapp is runnung\n");
@@ -33,13 +32,12 @@ void swap(struct process *a, struct process *b)
     b->brust_time=burst_time;
 } 
 
-
+//sorting process on basis of arrival time
 void bubbleSort(struct process *start) 
 { 
     int swapped, i; 
     struct process *ptr1; 
     struct process *lptr = NULL; 
-    printf("bubble is runnung\n");
     /* Checking for empty list */
     if (start == NULL) 
         return; 
@@ -62,7 +60,7 @@ void bubbleSort(struct process *start)
     } while (swapped); 
 } 
   
-/* function to swap arrival_time of two processs a and b*/
+
 
 
 
