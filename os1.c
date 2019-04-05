@@ -199,7 +199,7 @@ int main()
 {
     int p_id,priority,burst_time, arrival_time;
     printf("\nenter process for queue 1\n\n");
-    for(int i=0;i<3;i++)
+    for(int i=0;i<5;i++)
     {
         printf("\nenter p_id\n");
         scanf("%d",&p_id);
@@ -214,7 +214,7 @@ int main()
 
     }
     printf("\n\n\nenter process for queue 2\n\n\n");
-    for(int i=0;i<3;i++)
+    for(int i=0;i<5;i++)
     {
         printf("\nenter p_id\n");
         scanf("%d",&p_id);
