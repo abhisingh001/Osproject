@@ -4,7 +4,7 @@
 #include<stdlib.h>
 
 
-struct process *pq=NULL,*pq3=NULL,*curr,*temp,*curr1,*temp1,*pri,*sh,*pq1=NULL,*loc,*locp,*start,*ptr,*ptrp,*tr;
+struct process *pq=NULL,*pq3=NULL,*curr,*temp,*curr1=NULL,*temp1,*temp12,*pri,*sh,*pq1=NULL,*loc,*locp,*start,*ptr,*ptrp,*tr;
 int timer=0;
 
 
@@ -81,14 +81,14 @@ void create_processpq1(int p_id,int priority,int burst_time,int arrival_time)
 void show_process(struct process *arg)
 {
     sh=arg;
-    do
+    while(sh!=NULL)
     {
         printf("p_id :%-20d\n",sh->p_id);
         printf("priority :%-20d\n",sh->priority);
         printf("burst_time :%-20d\n",sh->burst_time);
         printf("arrival_time :%-20d\n\n\n",sh->arrival_time);
         sh=sh->next;
-    }while(sh!=NULL);
+    }
 
 }
 //it delete process of queue 1
@@ -100,8 +100,9 @@ void del_processpq()
     if(pq!=NULL)
      printf("new process :  %d  \n",pq->p_id);
     else
-     {printf("finished all process of queue 1\n");
-     printf("==============================\n\n\n\n");}
+     {printf("\n====================================\n");
+         printf("finished all process of queue 1\n");
+     printf("====================================\n\n\n\n");}
     free(curr);
 }
 //this function delete process of queue 2
@@ -119,8 +120,9 @@ struct process* del_processpq1()
         if(start->next==NULL)
         {
             pq1=NULL;
-            printf("finished all process of queue 2  \n");
-            printf("\n******************************\n");
+            printf("\n************************************\n");
+            printf("finished all process of queue 2  ");
+            printf("\n************************************\n");
             free(start);
             return NULL;
         }
@@ -129,7 +131,6 @@ struct process* del_processpq1()
             
             temp=pq1;
             pq1=pq1->next;
-            //printf("new process :  %d  \n",start->next->p_id);
             free(temp);
             return pq1;
         }
@@ -144,17 +145,13 @@ struct process* del_processpq1()
         {
             loc=ptr;
             locp=ptrp;
-            break;
-            
+            break;    
         }
         else
         {
             ptrp=ptr;
             ptr=ptr->next;
         }
-        
-        
-
     }
     if(loc->next==NULL)
     {
@@ -174,24 +171,30 @@ struct process* del_processpq1()
     
 }
 // function for adding process in queue 2 which is preempted by queue 1 when higher priority process comes
-void preempt()
+void preempt(int a)
 {
-    if(pq3==NULL)
-    {
-        pq3=pq;
-        pq=pq->next;
-        curr1=pq3;
-        curr1->next=NULL;
-    }
-    else
-    {
-        curr1->next=pq;
-        pq=pq->next;
-        curr1=curr1->next;
-        curr1->next=NULL;
-    }
     
-    
+    if(pq==NULL)
+    return;
+    while(pq->p_id!=a)
+    {printf("\nprocess p_id %d is preempted by process p_id %d \n",pq->p_id,a);
+        if(pq3==NULL)
+        {
+            pq3=pq;
+            curr1=pq3;
+            pq=pq->next;
+            curr1->next=NULL;
+        }
+        else
+        {
+            curr1->next=pq;
+            pq=pq->next;
+            curr1=curr1->next;
+            curr1->next=NULL;
+        }
+       
+      
+    }
 
 }
 
@@ -199,7 +202,7 @@ int main()
 {
     int p_id,priority,burst_time, arrival_time;
     printf("\nenter process for queue 1\n\n");
-    for(int i=0;i<5;i++)
+    for(int i=0;i<4;i++)
     {
         printf("\nenter p_id\n");
         scanf("%d",&p_id);
@@ -214,7 +217,7 @@ int main()
 
     }
     printf("\n\n\nenter process for queue 2\n\n\n");
-    for(int i=0;i<5;i++)
+    for(int i=0;i<4;i++)
     {
         printf("\nenter p_id\n");
         scanf("%d",&p_id);
@@ -228,15 +231,15 @@ int main()
         
 
     }
-
+    
     //sorting queue 1 according to their arrival time    
     bubbleSort(pq);
    show_process(pq);
    //show_process(pq1);
    
-
-    printf("\n\n\n\n\n\nqueue 1 starts executing by priority\n");
-    printf("\n******************************\n\n\n\n");
+    printf("\n***************************************************");
+    printf("\n\nqueue 1 starts executing by priority\n");
+    printf("\n***************************************************\n\n\n\n");
     pri=pq;
     
     while(1)
@@ -249,25 +252,42 @@ int main()
         }
         pri=pq;
         printf("running process %d\n",pri->p_id);
-        timer=timer+1;
-        pri->burst_time--;
-        printf("timer %d       burst_time left %d\n",timer,pri->burst_time);
+        timer=timer+2;
+        //pri->burst_time--;
+        //pri->burst_time--;
+        pri->burst_time=pri->burst_time-2;
+        if(pri->burst_time==-1)
+        {
+            pri->burst_time=pri->burst_time+1;;
+        }
+        printf("timer %d       burst_time left %d\n\n",timer,pri->burst_time);
+        if(pri->burst_time==0)
+        {
+            del_processpq();
+        }
         temp1=pri->next;
+        temp12=pri;
         if(temp1!=NULL)
         {
             while(temp1->arrival_time<=timer && temp1!=NULL)
             {
-                
-                if(temp1->priority<pri->priority)
+                if(temp1->priority< temp12->priority)
                 {
-                    printf("process  p_id   %d is preempting by process  p_id  %d\n\n",pri->p_id,temp1->p_id);
-                    preempt();
+                    preempt(temp1->p_id);
+                    temp12=pq;
                     
+                    temp1=temp12->next;
+                    
+                    if(temp1==NULL)
+                    break;
+
+
                 }
-               
-                temp1=temp1->next;
-                if(temp1==NULL)
+                else
                 {
+                    temp12=temp1;
+                    temp1=temp1->next;
+                    if(temp1==NULL)
                     break;
                 }
                 
@@ -275,12 +295,8 @@ int main()
             
         }
         
-        if(pri->burst_time==0)
-        {
-            
-            del_processpq();
-            
-        }
+        
+        
         if(pq==NULL)
             {
                 break;
@@ -295,17 +311,24 @@ int main()
                 break;
             }
         }
+    //end of queue 1 while loop (priority scheduling)    
     }
-   
-
-
+   show_process(pq3);
+    
     //round robin
-    bubbleSort(pq1);
-    curr1->next=pq1;
-    pq1=pq3;
+    bubbleSort(pq1);//sorting queue 2 according to arrival time
+    if(curr1!=NULL && pq3!=NULL)
+    {
+        curr1->next=pq1;//adding preemted process of queue 1 to queue 2 in front of it for higher priority
+        pq1=pq3;
+    }
+    
     show_process(pq1);
-    printf("\n\n\n\nqueue 2 starts executing by round robin\n");
-    printf("\n============================\n\n\n\n\n");
+    
+
+    printf("\n=================================================");
+    printf("\n\nqueue 2 starts executing by round robin\n");
+    printf("\n=================================================\n\n\n");
     pri=pq1;
    
     while(1)
@@ -319,12 +342,16 @@ int main()
         }
         
         printf("process id %d    running\n",pri->p_id);
-        timer++;
-        pri->burst_time--;
-        printf("timer %d         brust_left  %d\n",timer,pri->burst_time);
+        timer=timer+2;
+        pri->burst_time=pri->burst_time-2;
+        if(pri->burst_time==-1)
+        {
+            pri->burst_time=pri->burst_time+1;;
+        }
+        printf("timer %d         brust_left  %d\n\n",timer,pri->burst_time);
         if(pri->burst_time==0)
         {
-            printf("\nprocess p_id  %d   is finished\n\n\n\n",pri->p_id);
+            printf("process p_id  %d   is finished\n\n",pri->p_id);
             tr=del_processpq1();
             if(tr==NULL)
             {
@@ -339,13 +366,10 @@ int main()
         }
         if(pq1==NULL)
         {
-            
             break;
-
         }
         else
         {
-            
             if(pri->next==NULL)
             {
                 pri=pq1;
@@ -360,22 +384,10 @@ int main()
                 {
                     pri=pri->next;
                 }
-            }
-            
-            
-            
-            
+            }   
             
         }
-        
-        
-
-
-
-
-
+     //end of round robin while loop   
     }
-    
-    
-    
+//end of main()       
 }
