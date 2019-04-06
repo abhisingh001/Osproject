@@ -6,7 +6,9 @@
 
 struct process *pq=NULL,*pq3=NULL,*curr,*temp,*curr1=NULL,*temp1,*temp12,*pri,*sh,*pq1=NULL,*loc,*locp,*start,*ptr,*ptrp,*tr;
 int timer=0;
-
+//pq  is for queue 1 process
+//pq1 is for queue 2 process
+//pq3 is for those process which will preempted by higher priority process in queue 1 and later it added to pq1
 
 //function for creating process for queue 1 which run according to priority and if higher priority process arrives 
 //current process will move to queue 2 
