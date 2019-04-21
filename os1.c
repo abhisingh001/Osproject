@@ -265,6 +265,8 @@ int main()
         if(pri->burst_time==0)
         {
             del_processpq();
+		if(pq!=NULL)
+		pri=pq;
         }
         temp1=pri->next;
         temp12=pri;
